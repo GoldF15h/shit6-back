@@ -5,8 +5,10 @@ window.onload = () => {
 		if (input.files && input.files[0]) {
 			let formData = new FormData();
 			formData.append('image', input.files[0]);
+			formData.append('faceSelected', 1);
+			formData.append('template', 3);
 			$.ajax({
-				url: 'http://localhost:3333/api/test', // fix this to your liking
+				url: 'http://localhost:3333/api/preprocess', // fix this to your liking
 				type: 'POST',
 				data: formData,
 				cache: false,
@@ -18,7 +20,7 @@ window.onload = () => {
 				},
 				success: function (data) {
 					// alert("hello"); // if it's failing on actual server check your server FIREWALL + SET UP CORS
-					bytestring = data['status'];
+					bytestring = data['image'];
 					image = bytestring.split("'")[1];
 					imagebox.attr('src', 'data:image/jpeg;base64,' + image);
 				},

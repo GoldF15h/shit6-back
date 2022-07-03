@@ -6,9 +6,10 @@ import os , io , sys
 import numpy as np
 import random
 
+cascPath = 'detect/haarcascade_frontalface_alt.xml'
+faceCascade = cv2.CascadeClassifier(cascPath)
+
 def detectFaces (npimg) :
-    cascPath = 'detect/haarcascade_frontalface_alt.xml'
-    faceCascade = cv2.CascadeClassifier(cascPath)
     img = cv2.imdecode(npimg,cv2.COLOR_BGR2RGB)
     faces = faceCascade.detectMultiScale(
         img,
@@ -17,7 +18,7 @@ def detectFaces (npimg) :
         minSize=(40, 40),
         flags = cv2.CASCADE_SCALE_IMAGE
     )
-    return img,faces
+    return img, faces
 
 def getMasterFace (img, faces, selectedFaceIndex) : 
     face = faces[selectedFaceIndex]
@@ -32,6 +33,11 @@ def saveImage (img) :
     img.save(rawBytes, "JPEG")
     rawBytes.seek(0)
     return base64.b64encode(rawBytes.read())
+
+def originalImage (img, faces):
+    for (x, y, w, h) in faces:
+        cv2.rectangle(img, (x, y), (x+w, y+h), (0, 255, 0), 8)
+    return saveImage(img)
 
 def replaceAllFace (img, faces, selectedFaceIndex) :
     face_master = getMasterFace (img, faces, selectedFaceIndex)
